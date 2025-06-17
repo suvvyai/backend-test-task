@@ -16,6 +16,5 @@ class DialogueMessage(BaseModel):
 
 
 class Dialogue(Document):
-    channel_id: str
     chat_bot_id: PydanticObjectId
     message_list: list[DialogueMessage] = []
