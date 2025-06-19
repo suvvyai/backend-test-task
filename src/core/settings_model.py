@@ -20,6 +20,7 @@ class Settings(BaseSettings):
         env_file=".env",
         env_nested_delimiter="__",
     )
+    db_type: str  # for example: mongodb
 
     mongo: MongoSettings
     server: ServerSettings = ServerSettings()
