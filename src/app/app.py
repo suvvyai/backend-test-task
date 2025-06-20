@@ -7,7 +7,7 @@ from core.database.registry import initialize_database
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> None:
     # 1) Настраиваем логирование
     setup_logging()
     # 2) Инициализируем БД

@@ -13,7 +13,7 @@ from core.logs import configure_logger
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> None:
     # 1) Настраиваем логгер
     configure_logger()
 

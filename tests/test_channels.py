@@ -3,21 +3,16 @@ from httpx import AsyncClient
 from beanie import PydanticObjectId
 
 from core.database.models.chat_bot import ChatBot
-from core.database.models.channel import Channel
 
 
 @pytest.mark.asyncio
-async def test_crud_channel(client: AsyncClient):
+async def test_crud_channel(client: AsyncClient) -> None:
     # Создаем бота
     bot = ChatBot(name="Test Bot", secret_token="bot-token")
     await bot.insert()
 
     # 1. Create
-    create_payload = {
-        "bot_id": str(bot.id),
-        "channel_url": "http://example.com/webhook",
-        "channel_token": "chan12345"
-    }
+    create_payload = {"bot_id": str(bot.id), "channel_url": "http://example.com/webhook", "channel_token": "chan12345"}
     create_resp = await client.post("/api/channels/", json=create_payload)
     assert create_resp.status_code == 201
     created = create_resp.json()

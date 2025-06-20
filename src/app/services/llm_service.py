@@ -3,9 +3,10 @@ from random import randint
 from typing import Literal
 
 
-async def mock_llm_call(prompt: str,
-                        model: Literal["echo", "reverse", "dummy"] = "dummy",
-                        ) -> str:
+async def mock_llm_call(
+    prompt: str,
+    model: Literal["echo", "reverse", "dummy"] = "dummy",
+) -> str:
     """
     Простая имитация вызова LLM.
 

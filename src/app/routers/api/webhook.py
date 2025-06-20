@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Header, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.schemas import IncomingMessage, MessageRole, OutgoingMessage
 from core.database.models.chat_bot import ChatBot
 from core.database.models.channel import Channel
 from core.database.models.dialogue import Dialogue, DialogueMessage, MessageRole
-from app.services.channel_service import post_to_channel
 from app.services.llm_service import mock_llm_call
 
 router = APIRouter(prefix="/webhook", tags=["webhook"], dependencies=[Depends(HTTPBearer())])
@@ -14,9 +13,9 @@ bearer_scheme = HTTPBearer()
 
 @router.post("/new_message", response_model=OutgoingMessage)
 async def receive_webhook(
-        msg: IncomingMessage,
-        credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
-):
+    msg: IncomingMessage,
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+) -> JSONResponse:
     """
     chat_id - id чата, берем из channels: "id"
     """

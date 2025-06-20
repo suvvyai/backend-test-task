@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
-from beanie import Document, PydanticObjectId, Indexed
+from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, HttpUrl, Field, field_validator, ConfigDict
-from typing import Literal, Optional
+from typing import Optional
 
 
 # Database Model
@@ -16,7 +16,7 @@ class Channel(Document):
         name = "channels"
         indexes = [("bot_id",)]
 
-    def __init__(self, **data):  # обновлять updated_at при изменении
+    def __init__(self, **data: dict) -> None:  # обновлять updated_at при изменении
         super().__init__(**data)
         self.updated_at = datetime.now(timezone.utc)
 
@@ -48,7 +48,7 @@ class ChannelUpdate(BaseModel):
     channel_token: Optional[str] = Field(None, min_length=8, title="Новый токен канала")
 
     @field_validator("channel_token")
-    def token_not_empty(cls, v):
+    def token_not_empty(cls, v: str) -> str:
         if v is not None and not v.strip():
             raise ValueError("Токен не может быть пустым")
         return v

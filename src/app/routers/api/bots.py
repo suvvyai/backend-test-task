@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, status
-from beanie import PydanticObjectId
 from typing import List
 from app.schemas import BotCreate, BotRead
 from core.database.models.chat_bot import ChatBot
@@ -8,7 +7,7 @@ router = APIRouter(prefix="/api/bots", tags=["bots"])
 
 
 @router.post("/", response_model=BotRead, status_code=201)
-async def create_bot(data: BotCreate):
+async def create_bot(data: BotCreate) -> BotRead:
     """
     Создаёт чат-бота.
     """
@@ -18,7 +17,7 @@ async def create_bot(data: BotCreate):
 
 
 @router.get("/", response_model=List[BotRead], status_code=status.HTTP_200_OK)
-async def list_bots():
+async def list_bots() -> List[ChatBot]:
     """
     Возвращает список всех чат-ботов.
     """

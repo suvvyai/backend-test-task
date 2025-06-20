@@ -17,7 +17,7 @@ from app.app import app
 
 
 @pytest.fixture
-def event_loop():
+def event_loop() -> asyncio.AbstractEventLoop:
     """Создаём новый event loop для каждого теста"""
     loop = asyncio.new_event_loop()
     yield loop
@@ -25,14 +25,14 @@ def event_loop():
 
 
 @pytest.fixture(autouse=True)
-async def init_db():
+async def init_db() -> None:
     """Инициализировать базу данных перед тестом"""
     await initialize_database()
     yield
 
 
 @pytest.fixture(autouse=True)
-async def drop_db():
+async def drop_db() -> None:
     """Удалять тестовую БД перед каждым тестом"""
     if not settings.mongo.db_name.lower().endswith("test"):
         raise RuntimeError("Опасное имя БД, ожидается тестовая БД")
@@ -42,10 +42,10 @@ async def drop_db():
 
 
 @pytest.fixture
-async def client():
+async def client() -> AsyncClient:
     """Асинхронный HTTP-клиент для тестов"""
     async with AsyncClient(
-            transport=ASGITransport(app=app),
-            base_url="http://testserver",
+        transport=ASGITransport(app=app),
+        base_url="http://testserver",
     ) as c:
         yield c
