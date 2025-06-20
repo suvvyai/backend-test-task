@@ -6,6 +6,7 @@ from core.database.models.chat_bot import ChatBot
 
 router = APIRouter(prefix="/api/bots", tags=["bots"])
 
+
 @router.post("/", response_model=BotRead, status_code=201)
 async def create_bot(data: BotCreate):
     """

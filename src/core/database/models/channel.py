@@ -3,6 +3,7 @@ from beanie import Document, PydanticObjectId, Indexed
 from pydantic import BaseModel, HttpUrl, Field, field_validator, ConfigDict
 from typing import Literal, Optional
 
+
 # Database Model
 class Channel(Document):
     bot_id: PydanticObjectId = Field(..., description="ID чат-бота в базе данных")
@@ -19,13 +20,16 @@ class Channel(Document):
         super().__init__(**data)
         self.updated_at = datetime.now(timezone.utc)
 
+
 # Pydantic Schemas
 class ChannelBase(BaseModel):
     channel_url: HttpUrl = Field(..., title="URL канала")
     channel_token: str = Field(..., min_length=8, title="Токен канала")
 
+
 class ChannelCreate(ChannelBase):
     bot_id: PydanticObjectId = Field(..., title="ID чат-бота")
+
 
 class ChannelRead(ChannelBase):
     id: PydanticObjectId = Field(..., alias="_id")
@@ -34,9 +38,10 @@ class ChannelRead(ChannelBase):
     updated_at: datetime
 
     model_config = ConfigDict(
-        validate_by_name = True,
-        from_attributes = True,
+        validate_by_name=True,
+        from_attributes=True,
     )
+
 
 class ChannelUpdate(BaseModel):
     channel_url: Optional[HttpUrl] = Field(None, title="Новый URL канала")

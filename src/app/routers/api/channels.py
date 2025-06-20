@@ -8,6 +8,7 @@ from core.database.models.channel import Channel
 
 router = APIRouter(prefix="/channels", tags=["channels"])
 
+
 @router.post("/", response_model=ChannelRead, status_code=status.HTTP_201_CREATED)
 async def create_channel(data: ChannelCreate):
     ch = Channel(**data.model_dump())
@@ -16,12 +17,14 @@ async def create_channel(data: ChannelCreate):
         id=str(ch.id), bot_id=str(ch.bot_id), channel_url=str(ch.channel_url), channel_token=ch.channel_token
     )
 
+
 @router.get("/", response_model=List[ChannelRead])
 async def list_channels():
     all_ch = await Channel.find_all().to_list()
     return [ChannelRead(
         id=str(c.id), bot_id=str(c.bot_id), channel_url=str(c.channel_url), channel_token=c.channel_token
     ) for c in all_ch]
+
 
 @router.get("/{chan_id}", response_model=ChannelRead)
 async def get_channel(chan_id: str):
@@ -31,6 +34,7 @@ async def get_channel(chan_id: str):
     return ChannelRead(
         id=str(c.id), bot_id=str(c.bot_id), channel_url=str(c.channel_url), channel_token=c.channel_token
     )
+
 
 @router.patch("/{chan_id}", response_model=ChannelRead)
 async def update_channel(chan_id: str, data: ChannelUpdate):
@@ -45,7 +49,8 @@ async def update_channel(chan_id: str, data: ChannelUpdate):
         id=str(c.id), bot_id=str(c.bot_id), channel_url=str(c.channel_url), channel_token=c.channel_token
     )
 
-@router.delete("/{chan_id}", status_code=status.HTTP_204_NO_CONTENT, response_class=Response,)
+
+@router.delete("/{chan_id}", status_code=status.HTTP_204_NO_CONTENT, response_class=Response, )
 async def delete_channel(chan_id: str):
     c = await Channel.get(PydanticObjectId(chan_id))
     if not c:

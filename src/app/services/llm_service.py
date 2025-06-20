@@ -1,11 +1,10 @@
 import asyncio
-import random
+from random import randint
 from typing import Literal
 
 
 async def mock_llm_call(prompt: str,
-                        model: Literal["echo", "reverse", "dummy"] = "echo",
-                        delay: float = 0.1
+                        model: Literal["echo", "reverse", "dummy"] = "dummy",
                         ) -> str:
     """
     Простая имитация вызова LLM.
@@ -19,11 +18,11 @@ async def mock_llm_call(prompt: str,
     :return: ответ бота.
     """
     # эмулируем небольшую задержку, как при сетевом запросе
-    await asyncio.sleep(delay)
+    await asyncio.sleep(randint(1, 5))
 
     if model == "reverse":
         return prompt[::-1]
     if model == "dummy":
-        return "Здесь мог быть ваш ответ от LLM."
+        return "New message from llm"
     # по-умолчанию — echo
     return prompt

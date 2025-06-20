@@ -15,6 +15,7 @@ from core import settings
 from core.database.registry import initialize_database
 from app.app import app
 
+
 @pytest.fixture
 def event_loop():
     """Создаём новый event loop для каждого теста"""
@@ -22,11 +23,13 @@ def event_loop():
     yield loop
     loop.close()
 
+
 @pytest.fixture(autouse=True)
 async def init_db():
     """Инициализировать базу данных перед тестом"""
     await initialize_database()
     yield
+
 
 @pytest.fixture(autouse=True)
 async def drop_db():
@@ -37,11 +40,12 @@ async def drop_db():
     await client.drop_database(settings.mongo.db_name)
     yield
 
+
 @pytest.fixture
 async def client():
     """Асинхронный HTTP-клиент для тестов"""
     async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url="http://testserver",
+            transport=ASGITransport(app=app),
+            base_url="http://testserver",
     ) as c:
         yield c

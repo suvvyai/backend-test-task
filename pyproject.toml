@@ -42,3 +42,7 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+
+[tool.flake8]
+select = ["RQN"]          # включаем код проверок плагина
+ignore = ["F401", "F403"]

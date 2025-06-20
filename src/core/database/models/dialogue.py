@@ -8,7 +8,8 @@ class MessageRole(StrEnum):
     ASSISTANT = auto()
     SYSTEM = auto()
     USER = "customer"
-    EMPLOYEE  = "employee"
+    EMPLOYEE = "employee"
+
 
 class DialogueMessage(BaseModel):
     role: MessageRole
@@ -22,8 +23,10 @@ class Dialogue(Document):
     chat_bot_id: PydanticObjectId = Field(..., description="ID чат-бота в БД")
     message_list: list[DialogueMessage] = Field(default_factory=list, description="Список сообщений диалога")
     processed_message_ids: list[str] = Field(default_factory=list, description="Список ID уже обработанных сообщений")
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="Время создания диалога")
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="Время последнего обновления диалога")
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc),
+                                 description="Время создания диалога")
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc),
+                                 description="Время последнего обновления диалога")
 
     class Settings:
         name = "dialogues"

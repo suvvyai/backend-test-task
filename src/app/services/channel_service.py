@@ -1,6 +1,7 @@
 import asyncio
 import httpx
 
+
 async def post_to_channel(url: str, token: str, payload: dict) -> None:
     """
     POST’ит payload в канал по URL с нужным заголовком.

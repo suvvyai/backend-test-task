@@ -11,6 +11,7 @@ from core.settings_model import settings
 from app.routers.api import api_router
 from core.logs import configure_logger
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # 1) Настраиваем логгер
@@ -31,12 +32,9 @@ async def lifespan(app: FastAPI):
 
 
 def create_app() -> FastAPI:
-    """
-    Создаёт и настраивает FastAPI приложение с lifespan-хэндлером.
-    """
     app = FastAPI(
         title="ChatBot API",
-        lifespan=lifespan,     # <- здесь вместо on_event
+        lifespan=lifespan,
     )
     app.include_router(api_router)
     return app
