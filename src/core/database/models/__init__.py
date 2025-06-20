@@ -1,8 +1,5 @@
-from core.database.models.chat_bot import ChatBot
-from core.database.models.dialogue import Dialogue, DialogueMessage
+from .chat_bot import ChatBot
+from .dialogue import Dialogue, DialogueMessage, MessageRole
+from .channel import Channel
 
-__all__ = [
-    "ChatBot",
-    "Dialogue",
-    "DialogueMessage",
-]
+__all__ = ["ChatBot", "Dialogue", "DialogueMessage", "MessageRole", "Channel"]

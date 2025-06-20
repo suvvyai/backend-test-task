@@ -1,27 +1,30 @@
-from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
-
-from app.routers import router as main_router
-from core.database import initialize_database
+from app.routers.api import api_router
+from core.logs.handlers import setup_logging
+from core.database.registry import initialize_database
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
+async def lifespan(app: FastAPI):
+    # 1) Настраиваем логирование
+    setup_logging()
+    # 2) Инициализируем БД
     await initialize_database()
+    # Всё готово — разворачиваем приложение
     yield
+    # (опционально) здесь можно закрыть соединения или сделать очистку ресурсов
 
 
-app = FastAPI(
-    lifespan=lifespan,
-)
+def create_app() -> FastAPI:
+
+    app = FastAPI(
+        title="ChatBot API",
+        lifespan=lifespan,
+    )
+    app.include_router(api_router)
+    return app
 
 
-@app.get("/", include_in_schema=False)
-def index_to_docs_redirect() -> RedirectResponse:
-    return RedirectResponse(url="docs")
-
-
-app.include_router(main_router)
+app = create_app()

@@ -1,22 +1,45 @@
-import uvicorn
-from loguru import logger
+from contextlib import asynccontextmanager
 
-from core.logs import configure_logger, get_uvicorn_log_config
+from fastapi import FastAPI
+from beanie import init_beanie
+from motor.motor_asyncio import AsyncIOMotorClient
+
+from core.database.models.chat_bot import ChatBot
+from core.database.models.channel import Channel
+from core.database.models.dialogue import Dialogue
 from core.settings_model import settings
+from app.routers.api import api_router
+from core.logs import configure_logger
 
-
-def main() -> None:
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 1) Настраиваем логгер
     configure_logger()
-    logger.info("Starting app...")
 
-    uvicorn.run(
-        "app.app:app",
-        log_config=get_uvicorn_log_config(),
-        port=80,
-        host="0.0.0.0",  # noqa: S104
-        workers=settings.server.workers,
+    # 2) Подключаем Mongo и инициализируем Beanie
+    client = AsyncIOMotorClient(settings.mongo.url)
+    await init_beanie(
+        database=client.get_database(settings.mongo.db_name),
+        document_models=[ChatBot, Channel, Dialogue],
     )
 
+    # разводим приложение
+    yield
 
-if __name__ == "__main__":
-    main()
+    # (опционально) здесь можно закрыть соединение с БД:
+    # client.close()
+
+
+def create_app() -> FastAPI:
+    """
+    Создаёт и настраивает FastAPI приложение с lifespan-хэндлером.
+    """
+    app = FastAPI(
+        title="ChatBot API",
+        lifespan=lifespan,     # <- здесь вместо on_event
+    )
+    app.include_router(api_router)
+    return app
+
+
+app = create_app()

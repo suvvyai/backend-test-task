@@ -1,5 +1,6 @@
 import inspect
 import logging
+import sys
 
 from loguru import logger
 
@@ -23,3 +24,15 @@ class UvicornHandler(logging.Handler):
             level = "REQUEST"
 
         logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
+
+
+def setup_logging() -> None:
+    """
+    Настройка логгирования через Loguru.
+    """
+    logger.remove()
+    logger.add(
+        sys.stdout,
+        format="<green>{time:HH:mm:ss}</green> | <level>{level}</level> | {message}",
+        level="INFO",
+    )
