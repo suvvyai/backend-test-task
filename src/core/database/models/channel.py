@@ -1,7 +1,6 @@
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, HttpUrl, Field, field_validator, ConfigDict
-from typing import Optional
 
 
 # Database Model
@@ -9,8 +8,8 @@ class Channel(Document):
     bot_id: PydanticObjectId = Field(..., description="ID чат-бота в базе данных")
     channel_url: HttpUrl = Field(..., description="URL для отправки сообщений в канал")
     channel_token: str = Field(..., description="Токен авторизации канала")
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     class Settings:
         name = "channels"
@@ -18,7 +17,7 @@ class Channel(Document):
 
     def __init__(self, **data: dict) -> None:  # обновлять updated_at при изменении
         super().__init__(**data)
-        self.updated_at = datetime.now(timezone.utc)
+        self.updated_at = datetime.now(UTC)
 
 
 # Pydantic Schemas
@@ -44,8 +43,8 @@ class ChannelRead(ChannelBase):
 
 
 class ChannelUpdate(BaseModel):
-    channel_url: Optional[HttpUrl] = Field(None, title="Новый URL канала")
-    channel_token: Optional[str] = Field(None, min_length=8, title="Новый токен канала")
+    channel_url: HttpUrl | None = Field(None, title="Новый URL канала")
+    channel_token: str | None = Field(None, min_length=8, title="Новый токен канала")
 
     @field_validator("channel_token")
     def token_not_empty(cls, v: str) -> str:

@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
+from collections.abc import AsyncGenerator
 
 from core.database.models.chat_bot import ChatBot
 from core.database.models.channel import Channel
@@ -13,12 +14,12 @@ from core.logs import configure_logger
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> None:
+async def lifespan(app: FastAPI) -> AsyncGenerator:
     # 1) Настраиваем логгер
     configure_logger()
 
     # 2) Подключаем Mongo и инициализируем Beanie
-    client = AsyncIOMotorClient(settings.mongo.url)
+    client: AsyncIOMotorClient = AsyncIOMotorClient(settings.mongo.url)
     await init_beanie(
         database=client.get_database(settings.mongo.db_name),
         document_models=[ChatBot, Channel, Dialogue],

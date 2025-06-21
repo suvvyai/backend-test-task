@@ -1,5 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
-from typing import List
+from fastapi import APIRouter, status
 from app.schemas import BotCreate, BotRead
 from core.database.models.chat_bot import ChatBot
 
@@ -16,10 +15,9 @@ async def create_bot(data: BotCreate) -> BotRead:
     return bot
 
 
-@router.get("/", response_model=List[BotRead], status_code=status.HTTP_200_OK)
-async def list_bots() -> List[ChatBot]:
+@router.get("/", response_model=list[BotRead], status_code=status.HTTP_200_OK)
+async def list_bots() -> list[ChatBot]:
     """
     Возвращает список всех чат-ботов.
     """
-    bots = await ChatBot.find_all().to_list()
-    return bots
+    return await ChatBot.find_all().to_list()

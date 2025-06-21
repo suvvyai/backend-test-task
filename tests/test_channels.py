@@ -8,7 +8,7 @@ from core.database.models.chat_bot import ChatBot
 @pytest.mark.asyncio
 async def test_crud_channel(client: AsyncClient) -> None:
     # Создаем бота
-    bot = ChatBot(name="Test Bot", secret_token="bot-token")
+    bot = ChatBot(name="Test Bot", secret_token="bot-token")  # noqa: S106
     await bot.insert()
 
     # 1. Create

@@ -46,3 +46,14 @@ asyncio_mode = "auto"
 [tool.flake8]
 select = ["RQN"]          # включаем код проверок плагина
 ignore = ["F401", "F403"]
+
+[tool.ruff]
+ignore = [
+    "S106",
+    "I001",
+    "S106",
+    "I001",
+    "FAST001",
+    "E402",
+    "RUF100",
+]

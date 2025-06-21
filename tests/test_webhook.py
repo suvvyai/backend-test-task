@@ -3,7 +3,7 @@ from httpx import AsyncClient
 
 from core.database.models.chat_bot import ChatBot
 from core.database.models.channel import Channel
-from core.database.models.dialogue import Dialogue, DialogueMessage, MessageRole
+from core.database.models.dialogue import Dialogue, MessageRole
 
 
 # Dummy response для мокирования внешнего HTTP-запроса
@@ -21,7 +21,9 @@ async def test_invalid_token(client: AsyncClient) -> None:
     payload = {"message_id": "1", "chat_id": "chat1", "text": "hello", "message_sender": "customer"}
     # Неправильный токен — ожидаем 401
     response = await client.post(
-        "/api/webhook/new_message", json=payload, headers={"Authorization": "Bearer wrongtoken"}
+        "/api/webhook/new_message",
+        json=payload,
+        headers={"Authorization": "Bearer wrongtoken"},
     )
     assert response.status_code == 401
     assert response.json()["detail"] == "Неверный токен бота"
@@ -36,7 +38,9 @@ async def test_ignore_employee_message(client: AsyncClient) -> None:
     payload = {"message_id": "2", "chat_id": "chat2", "text": "ignored", "message_sender": "employee"}
     # Сообщение от сотрудника — должны вернуть 200 и detail="Ignored"
     response = await client.post(
-        "/api/webhook/new_message", json=payload, headers={"Authorization": "Bearer valid-token"}
+        "/api/webhook/new_message",
+        json=payload,
+        headers={"Authorization": "Bearer valid-token"},
     )
     assert response.status_code == 200
     assert response.json()["detail"] == "Ignored"
@@ -54,7 +58,7 @@ async def test_successful_message_processing(client: AsyncClient, monkeypatch: p
 
     async def dummy_post_to_channel(url: str, token: str, payload: dict) -> None:
         assert url == "http://example.com/webhook"
-        assert token == "chan-token"
+        assert token == "chan-token"  # noqa: S105
         assert payload["chat_id"] == "chat3"
         assert payload["text"]
         # возвращать ничего не нужно
@@ -63,7 +67,9 @@ async def test_successful_message_processing(client: AsyncClient, monkeypatch: p
 
     payload = {"message_id": "3", "chat_id": "chat3", "text": "hi there", "message_sender": "customer"}
     response = await client.post(
-        "/api/webhook/new_message", json=payload, headers={"Authorization": "Bearer valid-token"}
+        "/api/webhook/new_message",
+        json=payload,
+        headers={"Authorization": "Bearer valid-token"},
     )
     assert response.status_code == 200
     assert response.json()["detail"] == "OK"
@@ -87,7 +93,9 @@ async def test_duplicate_message_id(client: AsyncClient) -> None:
 
     payload = {"message_id": "4", "chat_id": "chat4", "text": "duplicate", "message_sender": "customer"}
     response = await client.post(
-        "/api/webhook/new_message", json=payload, headers={"Authorization": "Bearer valid-token"}
+        "/api/webhook/new_message",
+        json=payload,
+        headers={"Authorization": "Bearer valid-token"},
     )
     assert response.status_code == 409
     assert response.json()["detail"] == "Duplicate"

@@ -1,13 +1,14 @@
 from contextlib import asynccontextmanager
-
+from collections.abc import AsyncGenerator
 from fastapi import FastAPI
+
 from app.routers.api import api_router
 from core.logs.handlers import setup_logging
 from core.database.registry import initialize_database
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> None:
+async def lifespan(app: FastAPI) -> AsyncGenerator:
     # 1) Настраиваем логирование
     setup_logging()
     # 2) Инициализируем БД

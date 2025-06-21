@@ -1,8 +1,7 @@
-from typing import List
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException, status, Response
 
-from app.schemas import ChannelCreate, ChannelRead, ChannelUpdate, BotCreate
+from app.schemas import ChannelCreate, ChannelRead, ChannelUpdate
 from core.database.models.channel import Channel
 
 router = APIRouter(prefix="/channels", tags=["channels"])
@@ -13,12 +12,15 @@ async def create_channel(data: ChannelCreate) -> ChannelRead:
     ch = Channel(**data.model_dump())
     await ch.insert()
     return ChannelRead(
-        id=str(ch.id), bot_id=str(ch.bot_id), channel_url=str(ch.channel_url), channel_token=ch.channel_token
+        id=str(ch.id),
+        bot_id=str(ch.bot_id),
+        channel_url=str(ch.channel_url),
+        channel_token=ch.channel_token,
     )
 
 
-@router.get("/", response_model=List[ChannelRead])
-async def list_channels() -> List[ChannelRead]:
+@router.get("/", response_model=list[ChannelRead])
+async def list_channels() -> list[ChannelRead]:
     all_ch = await Channel.find_all().to_list()
     return [
         ChannelRead(id=str(c.id), bot_id=str(c.bot_id), channel_url=str(c.channel_url), channel_token=c.channel_token)
@@ -32,7 +34,10 @@ async def get_channel(chan_id: str) -> ChannelRead:
     if not c:
         raise HTTPException(status_code=404, detail="Channel not found")
     return ChannelRead(
-        id=str(c.id), bot_id=str(c.bot_id), channel_url=str(c.channel_url), channel_token=c.channel_token
+        id=str(c.id),
+        bot_id=str(c.bot_id),
+        channel_url=str(c.channel_url),
+        channel_token=c.channel_token,
     )
 
 
@@ -46,7 +51,10 @@ async def update_channel(chan_id: str, data: ChannelUpdate) -> ChannelRead:
         setattr(c, k, v)
     await c.save()
     return ChannelRead(
-        id=str(c.id), bot_id=str(c.bot_id), channel_url=str(c.channel_url), channel_token=c.channel_token
+        id=str(c.id),
+        bot_id=str(c.bot_id),
+        channel_url=str(c.channel_url),
+        channel_token=c.channel_token,
     )
 
 

@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from typing import Annotated
+from fastapi import APIRouter, HTTPException, status, Depends, Request
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from app.schemas import IncomingMessage, MessageRole, OutgoingMessage
+from app.schemas import IncomingMessage, OutgoingMessage
 from core.database.models.chat_bot import ChatBot
 from core.database.models.channel import Channel
 from core.database.models.dialogue import Dialogue, DialogueMessage, MessageRole
@@ -14,12 +15,14 @@ bearer_scheme = HTTPBearer()
 @router.post("/new_message", response_model=OutgoingMessage)
 async def receive_webhook(
     msg: IncomingMessage,
-    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    request: Request,
+    # credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
 ) -> JSONResponse:
     """
     chat_id - id чата, берем из channels: "id"
     """
     # 1) Проверяем токен бота
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(bearer_scheme)] = await bearer_scheme(request)
     token = credentials.credentials
     bot = await ChatBot.find_one(ChatBot.secret_token == token)
     if not bot:
@@ -50,7 +53,7 @@ async def receive_webhook(
             chat_id=msg.chat_id,
             text=msg.text,
             role=MessageRole.USER,
-        )
+        ),
     )
     await dlg.save()
 
@@ -76,7 +79,7 @@ async def receive_webhook(
     #     )
     # )
     # 7) Генерируем ответ через LLM-имитатор
-    assistant_response = await mock_llm_call(msg.text, model="echo")
+    assistant_response = await mock_llm_call(msg.text, model="dummy")
 
     # 8) Сохраняем ответ ассистента
     dlg.message_list.append(
@@ -85,7 +88,7 @@ async def receive_webhook(
             chat_id=msg.chat_id,
             text=assistant_response,
             role=MessageRole.ASSISTANT,
-        )
+        ),
     )
 
     await dlg.save()
