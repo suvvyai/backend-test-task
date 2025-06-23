@@ -49,7 +49,8 @@ async def receive_message(
     if message.message_sender == "customer":
         response_text = await mock_llm_call(message.text)
         await send_message_to_channel_logic(
-            channel, MessageSend(chat_id=message.chat_id, text=response_text),
+            channel,
+            MessageSend(chat_id=message.chat_id, text=response_text),
         )
 
     return None  # 201 Created (без тела)

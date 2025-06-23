@@ -18,5 +18,6 @@ async def send_message_to_channel_logic(channel: Channel, data: MessageSend) -> 
             response.raise_for_status()
         except httpx.HTTPError as e:
             raise HTTPException(
-                status_code=502, detail=f"Failed to deliver message: {e!s}",
+                status_code=502,
+                detail=f"Failed to deliver message: {e!s}",
             )

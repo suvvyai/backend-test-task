@@ -7,9 +7,12 @@ from httpx import AsyncClient
 
 @pytest.mark.asyncio
 @patch(
-    "src.app.routers.api.messages.send_message_to_channel_logic", new_callable=AsyncMock,
+    "src.app.routers.api.messages.send_message_to_channel_logic",
+    new_callable=AsyncMock,
 )
-async def test_send_message_success(mock_send: AsyncMock, client: AsyncClient, init_db: None) -> None:
+async def test_send_message_success(
+    mock_send: AsyncMock, client: AsyncClient, init_db: None
+) -> None:
     # 1. Создание канала
     channel_data = {
         "name": "SendChannel",
@@ -22,7 +25,9 @@ async def test_send_message_success(mock_send: AsyncMock, client: AsyncClient, i
     message_data = {"chat_id": "chat-test", "text": "Test message to channel"}
     headers = {"Authorization": f"Bearer {channel_data['token']}"}
     response = await client.post(
-        "/api/messages/send", json=message_data, headers=headers,
+        "/api/messages/send",
+        json=message_data,
+        headers=headers,
     )
 
     assert response.status_code == status.HTTP_202_ACCEPTED
@@ -34,14 +39,19 @@ async def test_send_message_success(mock_send: AsyncMock, client: AsyncClient, i
 
 @pytest.mark.asyncio
 @patch(
-    "src.app.routers.api.messages.send_message_to_channel_logic", new_callable=AsyncMock,
+    "src.app.routers.api.messages.send_message_to_channel_logic",
+    new_callable=AsyncMock,
 )
-async def test_send_message_invalid_token(mock_send: AsyncMock, client: AsyncClient, init_db: None) -> None:
+async def test_send_message_invalid_token(
+    mock_send: AsyncMock, client: AsyncClient, init_db: None
+) -> None:
     message_data = {"chat_id": "chat-fail", "text": "Unauthorized"}
     headers = {"Authorization": "Bearer wrong-token"}
 
     response = await client.post(
-        "/api/messages/send", json=message_data, headers=headers,
+        "/api/messages/send",
+        json=message_data,
+        headers=headers,
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN

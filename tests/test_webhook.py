@@ -10,9 +10,12 @@ from src.core.database.models import Message
 
 @pytest.mark.asyncio
 @patch(
-    "src.app.routers.api.webhook.send_message_to_channel_logic", new_callable=AsyncMock,
+    "src.app.routers.api.webhook.send_message_to_channel_logic",
+    new_callable=AsyncMock,
 )
-async def test_receive_message_success(mock_send: AsyncMock, client: AsyncClient, init_db: None) -> None:
+async def test_receive_message_success(
+    mock_send: AsyncMock, client: AsyncClient, init_db: None
+) -> None:
     # 1. Создание канала
     channel_data = {
         "name": "Test Channel",
@@ -30,7 +33,9 @@ async def test_receive_message_success(mock_send: AsyncMock, client: AsyncClient
     }
     headers = {"Authorization": f"Bearer {channel_data['token']}"}
     response = await client.post(
-        "/api/webhook/new_message", json=msg_data, headers=headers,
+        "/api/webhook/new_message",
+        json=msg_data,
+        headers=headers,
     )
 
     assert response.status_code == status.HTTP_201_CREATED
@@ -46,9 +51,12 @@ async def test_receive_message_success(mock_send: AsyncMock, client: AsyncClient
 
 @pytest.mark.asyncio
 @patch(
-    "src.app.routers.api.webhook.send_message_to_channel_logic", new_callable=AsyncMock,
+    "src.app.routers.api.webhook.send_message_to_channel_logic",
+    new_callable=AsyncMock,
 )
-async def test_receive_message_duplicate(mock_send: AsyncMock, client: AsyncClient, init_db: None) -> None:
+async def test_receive_message_duplicate(
+    mock_send: AsyncMock, client: AsyncClient, init_db: None
+) -> None:
     # 1. Создание канала
     channel_data = {
         "name": "Channel",
@@ -86,9 +94,12 @@ async def test_receive_message_duplicate(mock_send: AsyncMock, client: AsyncClie
 
 @pytest.mark.asyncio
 @patch(
-    "src.app.routers.api.webhook.send_message_to_channel_logic", new_callable=AsyncMock,
+    "src.app.routers.api.webhook.send_message_to_channel_logic",
+    new_callable=AsyncMock,
 )
-async def test_receive_message_invalid_token(mock_send: AsyncMock, client: AsyncClient, init_db: None) -> None:
+async def test_receive_message_invalid_token(
+    mock_send: AsyncMock, client: AsyncClient, init_db: None
+) -> None:
     msg = {
         "message_id": "msg999",
         "chat_id": "chat9",
@@ -105,9 +116,12 @@ async def test_receive_message_invalid_token(mock_send: AsyncMock, client: Async
 
 @pytest.mark.asyncio
 @patch(
-    "src.app.routers.api.webhook.send_message_to_channel_logic", new_callable=AsyncMock,
+    "src.app.routers.api.webhook.send_message_to_channel_logic",
+    new_callable=AsyncMock,
 )
-async def test_receive_message_from_employee(mock_send: AsyncMock, client: AsyncClient, init_db: None) -> None:
+async def test_receive_message_from_employee(
+    mock_send: AsyncMock, client: AsyncClient, init_db: None
+) -> None:
     # 1. Канал
     token1 = "oper-token"
     channel_data = {
@@ -139,9 +153,12 @@ async def test_receive_message_from_employee(mock_send: AsyncMock, client: Async
 
 @pytest.mark.asyncio
 @patch(
-    "src.app.routers.api.webhook.send_message_to_channel_logic", new_callable=AsyncMock,
+    "src.app.routers.api.webhook.send_message_to_channel_logic",
+    new_callable=AsyncMock,
 )
-async def test_receive_message_invalid_sender(mock_send: AsyncMock, client: AsyncClient, init_db: None) -> None:
+async def test_receive_message_invalid_sender(
+    mock_send: AsyncMock, client: AsyncClient, init_db: None
+) -> None:
     # 1. Создание канала
     channel_data = {
         "name": "Test Channel",

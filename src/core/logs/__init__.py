@@ -9,9 +9,7 @@ __all__ = ["UvicornHandler", "configure_logger", "get_uvicorn_log_config"]
 
 def configure_logger() -> None:
     log_format_all = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level> {exception}\n"
-    log_format_request = (
-        "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | {message} {exception}\n"
-    )
+    log_format_request = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | {message} {exception}\n"
 
     def log_format(record: "Record") -> str:  # type: ignore  # noqa: F821
         if record["level"].name == "REQUEST":

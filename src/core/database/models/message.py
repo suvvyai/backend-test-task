@@ -11,7 +11,8 @@ class Message(Document):
     chat_id: Annotated[str, Field(description="ID чата")]
     text: Annotated[str, Field(description="Текст сообщения")]
     message_sender: Annotated[
-        Literal["customer", "employee"], Field(description="Отправитель сообщения"),
+        Literal["customer", "employee"],
+        Field(description="Отправитель сообщения"),
     ]
     channel_id: Annotated[ObjectId, Field(description="ID канала")]
     created_at: Annotated[datetime, Field(default_factory=lambda: datetime.now(UTC))]

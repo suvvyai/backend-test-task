@@ -55,7 +55,8 @@ async def test_update_channel(client: AsyncClient, init_db: None) -> None:
 
     new_name = "Updated Name"
     patch_response = await client.patch(
-        f"/api/channels/{channel_id}", json={"name": new_name},
+        f"/api/channels/{channel_id}",
+        json={"name": new_name},
     )
     assert patch_response.status_code == status.HTTP_200_OK
     data = patch_response.json()
