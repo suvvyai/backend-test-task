@@ -6,9 +6,9 @@ import motor.motor_asyncio
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from src.app.app import app
 from src.core import settings
 from src.core.database import initialize_database
-from src.app.app import app
 
 
 @pytest.fixture(scope="session")
@@ -17,7 +17,7 @@ def event_loop() -> AbstractEventLoop:
     return asyncio.get_event_loop()
 
 
-@pytest.fixture(autouse=True, scope="session")
+@pytest.fixture
 async def init_db() -> None:
     """Ининциализировать базу данных"""
     await initialize_database()
@@ -29,7 +29,9 @@ async def drop_db() -> None:
     if not settings.mongo.db_name.lower().endswith("test"):
         raise RuntimeError
 
-    mongo: motor.motor_asyncio.AsyncIOMotorClient = motor.motor_asyncio.AsyncIOMotorClient(settings.mongo.url)
+    mongo: motor.motor_asyncio.AsyncIOMotorClient = (
+        motor.motor_asyncio.AsyncIOMotorClient(settings.mongo.url)
+    )
     await mongo.drop_database(settings.mongo.db_name)
 
 
