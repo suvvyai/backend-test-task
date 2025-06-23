@@ -4,6 +4,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from src.core import settings
 from src.core.database.models import ChatBot, Dialogue
+from src.core.database.models.channel import Channel
 
 
 async def initialize_database() -> None:
@@ -14,6 +15,7 @@ async def initialize_database() -> None:
         document_models=[
             ChatBot,
             Dialogue,
+            Channel,
         ],
     )
     logger.success("DB is ready!")
