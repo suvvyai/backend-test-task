@@ -1,8 +1,8 @@
 import uvicorn
 from loguru import logger
 
-from core.logs import configure_logger, get_uvicorn_log_config
-from core.settings_model import settings
+from src.core.logs import configure_logger, get_uvicorn_log_config
+from src.core.settings_model import settings
 
 
 def main() -> None:

@@ -1,3 +1,3 @@
-from core.database.registry import initialize_database
+from src.core.database.registry import initialize_database
 
 __all__ = ["initialize_database"]

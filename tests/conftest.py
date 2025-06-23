@@ -6,8 +6,8 @@ import motor.motor_asyncio
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from core import settings
-from core.database import initialize_database
+from src.core import settings
+from src.core.database import initialize_database
 from src.app.app import app
 
 

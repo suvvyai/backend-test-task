@@ -1,7 +1,7 @@
 from asyncio import sleep
 from random import randint
 
-from core.database.models import DialogueMessage
+from src.core.database.models import DialogueMessage
 
 
 async def mock_llm_call(chat_history: list[DialogueMessage]) -> str:

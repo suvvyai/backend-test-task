@@ -4,8 +4,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
-from app.routers import router as main_router
-from core.database import initialize_database
+from src.app.routers import router as main_router
+from src.core.database import initialize_database
 
 
 @asynccontextmanager

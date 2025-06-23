@@ -2,8 +2,8 @@ from beanie import init_beanie
 from loguru import logger
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from core import settings
-from core.database.models import ChatBot, Dialogue
+from src.core import settings
+from src.core.database.models import ChatBot, Dialogue
 
 
 async def initialize_database() -> None:
