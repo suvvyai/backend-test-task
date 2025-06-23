@@ -1,0 +1,17 @@
+services:
+  app:
+    ports:
+      - "8000:80"
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+    environment:
+      PYTHONPATH: /app
+      MONGO__URL: mongodb://admin:admin@mongo:27017
+      MONGO__DB_NAME: dbtest
+    command: ["uvicorn", "app.app:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
+
+  mongo:
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin

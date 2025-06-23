@@ -1,0 +1,28 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend-app
+    depends_on:
+      - mongo
+    environment:
+      PYTHONPATH: /app
+      MONGO__URL: ${MONGO__URL}
+      MONGO__DB_NAME: ${MONGO__DB_NAME}
+    command: ["python", "src/main.py"]
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    container_name: backend-mongo
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO__DB_NAME}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
