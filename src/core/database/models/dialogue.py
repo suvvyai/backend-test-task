@@ -1,7 +1,7 @@
 from enum import StrEnum, auto
 
 from beanie import Document, PydanticObjectId
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class MessageRole(StrEnum):
@@ -17,4 +17,6 @@ class DialogueMessage(BaseModel):
 
 class Dialogue(Document):
     chat_bot_id: PydanticObjectId
-    message_list: list[DialogueMessage] = []
+    chat_id: str
+    message_list: list[DialogueMessage] = Field(default_factory=list)
+    processed_message_ids: list[str] = Field(default_factory=list)
