@@ -1,10 +1,12 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.responses import RedirectResponse
 
-from app.routers import router as main_router
+# Импортируем новый роутер
+from app.routers.api.channels import router as channels_router
+from app.routers.api.hello_world import router as hello_world_router
 from core.database import initialize_database
 
 
@@ -23,5 +25,9 @@ app = FastAPI(
 def index_to_docs_redirect() -> RedirectResponse:
     return RedirectResponse(url="docs")
 
+# Собираем основной роутер
+main_router = APIRouter(prefix="/api")
+main_router.include_router(hello_world_router)
+main_router.include_router(channels_router)
 
 app.include_router(main_router)
