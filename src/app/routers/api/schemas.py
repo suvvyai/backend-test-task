@@ -1,6 +1,6 @@
 from beanie import PydanticObjectId
 from pydantic import BaseModel, Field, HttpUrl, SecretStr
-
+from typing import Literal
 
 class ChannelBase(BaseModel):
     """Базовая схема для канала."""
@@ -26,3 +26,10 @@ class ChannelRead(ChannelBase):
 
     class Config:
         from_attributes = True
+
+class IncomingMessage(BaseModel):
+    """Схема для входящего сообщения из канала."""
+    message_id: str
+    chat_id: str
+    text: str
+    message_sender: Literal["customer", "employee"]
