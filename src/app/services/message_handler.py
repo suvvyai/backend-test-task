@@ -1,7 +1,14 @@
 from loguru import logger
 
 from app.routers.api.schemas import IncomingMessage
-from core.database.models import ChatBot, Dialogue, DialogueMessage, MessageRole
+from app.services.channel_sender import ChannelSenderService
+from core.database.models import (
+    Channel,
+    ChatBot,
+    Dialogue,
+    DialogueMessage,
+    MessageRole,
+)
 from predict.mock_llm_call import mock_llm_call
 
 
@@ -10,20 +17,24 @@ class MessageHandlerService:
         self.chat_bot = chat_bot
         self.message = message
 
-    async def process_message(self) -> str | None:
+    async def process_message(self) -> None:  # <--- Теперь возвращает None
         """
         Основной метод для обработки входящего сообщения.
-        Возвращает текст ответа или None, если отвечать не нужно.
+        Теперь не возвращает текст, а сам вызывает отправку.
         """
         if self.message.message_sender == "employee":
-            logger.info(f"Ignoring message from employee for chat_id={self.message.chat_id}")
-            return None
+            logger.info(
+                f"Ignoring message from employee for chat_id={self.message.chat_id}"
+            )
+            return
 
         dialogue = await self._get_or_create_dialogue()
 
         if self.message.message_id in dialogue.processed_message_ids:
-            logger.warning(f"Duplicate message_id={self.message.message_id} received. Ignoring.")
-            return None
+            logger.warning(
+                f"Duplicate message_id={self.message.message_id} received. Ignoring."
+            )
+            return
 
         dialogue.message_list.append(
             DialogueMessage(role=MessageRole.USER, text=self.message.text)
@@ -38,12 +49,23 @@ class MessageHandlerService:
         dialogue.processed_message_ids.add(self.message.message_id)
 
         await dialogue.save()
-        logger.success(f"Processed message and generated response for chat_id={self.message.chat_id}")
+        logger.success(
+            f"Processed message and generated response for chat_id={self.message.chat_id}"
+        )
 
-        return response_text
+        channel = await Channel.find_one(Channel.chat_bot_id == self.chat_bot.id)
+        if not channel:
+            logger.error(
+                f"No channel found for chat_bot_id={self.chat_bot.id}. Cannot send reply."
+            )
+            return
+
+        await ChannelSenderService.send_message(
+            channel=channel, chat_id=self.message.chat_id, text=response_text
+        )
 
     async def _get_or_create_dialogue(self) -> Dialogue:
-        """Находит существующий диалог или создает новый."""
+
         dialogue = await Dialogue.find_one(
             Dialogue.chat_bot_id == self.chat_bot.id,
             Dialogue.external_chat_id == self.message.chat_id,
