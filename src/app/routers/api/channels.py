@@ -1,5 +1,3 @@
-from typing import List
-
 from beanie import PydanticObjectId
 from fastapi import APIRouter, HTTPException, status
 
@@ -17,8 +15,8 @@ async def create_channel(channel_in: ChannelCreate) -> Channel:
     return channel
 
 
-@router.get("/", response_model=List[ChannelRead])
-async def list_channels() -> List[Channel]:
+@router.get("/", response_model=list[ChannelRead])
+async def list_channels() -> list[Channel]:
     """Получение списка всех каналов."""
     channels = await Channel.find_all().to_list()
     return channels
@@ -38,7 +36,8 @@ async def get_channel(channel_id: PydanticObjectId) -> Channel:
 
 @router.put("/{channel_id}", response_model=ChannelRead)
 async def update_channel(
-        channel_id: PydanticObjectId, channel_update: ChannelUpdate
+    channel_id: PydanticObjectId,
+    channel_update: ChannelUpdate,
 ) -> Channel:
     """Обновление канала."""
     channel = await get_channel(channel_id)
@@ -60,4 +59,4 @@ async def delete_channel(channel_id: PydanticObjectId) -> None:
     """Удаление канала."""
     channel = await get_channel(channel_id)
     await channel.delete()
-    return None
+    return

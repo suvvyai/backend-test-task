@@ -4,11 +4,10 @@ from contextlib import asynccontextmanager
 from fastapi import APIRouter, FastAPI
 from fastapi.responses import RedirectResponse
 
-
-from app.routers.api.channels import router as channels_router
-from app.routers.api.hello_world import router as hello_world_router
-from app.routers.api.webhook import router as webhook_router
-from core.database import initialize_database
+from src.app.routers.api.channels import router as channels_router
+from src.app.routers.api.hello_world import router as hello_world_router
+from src.app.routers.api.webhook import router as webhook_router
+from src.core.database.registry import initialize_database
 
 
 @asynccontextmanager

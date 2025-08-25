@@ -1,8 +1,8 @@
 from loguru import logger
 
-from app.routers.api.schemas import IncomingMessage
-from app.services.channel_sender import ChannelSenderService
-from core.database.models import (
+from src.app.routers.api.schemas import IncomingMessage
+from src.app.services.channel_sender import ChannelSenderService
+from src.core.database.models import (
     Channel,
     ChatBot,
     Dialogue,
@@ -24,7 +24,7 @@ class MessageHandlerService:
         """
         if self.message.message_sender == "employee":
             logger.info(
-                f"Ignoring message from employee for chat_id={self.message.chat_id}"
+                f"Ignoring message from employee for chat_id={self.message.chat_id}",
             )
             return
 
@@ -32,40 +32,41 @@ class MessageHandlerService:
 
         if self.message.message_id in dialogue.processed_message_ids:
             logger.warning(
-                f"Duplicate message_id={self.message.message_id} received. Ignoring."
+                f"Duplicate message_id={self.message.message_id} received. Ignoring.",
             )
             return
 
         dialogue.message_list.append(
-            DialogueMessage(role=MessageRole.USER, text=self.message.text)
+            DialogueMessage(role=MessageRole.USER, text=self.message.text),
         )
 
         response_text = await mock_llm_call(dialogue.message_list)
 
         dialogue.message_list.append(
-            DialogueMessage(role=MessageRole.ASSISTANT, text=response_text)
+            DialogueMessage(role=MessageRole.ASSISTANT, text=response_text),
         )
 
         dialogue.processed_message_ids.add(self.message.message_id)
 
         await dialogue.save()
         logger.success(
-            f"Processed message and generated response for chat_id={self.message.chat_id}"
+            f"Processed message and generated response for chat_id={self.message.chat_id}",
         )
 
         channel = await Channel.find_one(Channel.chat_bot_id == self.chat_bot.id)
         if not channel:
             logger.error(
-                f"No channel found for chat_bot_id={self.chat_bot.id}. Cannot send reply."
+                f"No channel found for chat_bot_id={self.chat_bot.id}. Cannot send reply.",
             )
             return
 
         await ChannelSenderService.send_message(
-            channel=channel, chat_id=self.message.chat_id, text=response_text
+            channel=channel,
+            chat_id=self.message.chat_id,
+            text=response_text,
         )
 
     async def _get_or_create_dialogue(self) -> Dialogue:
-
         dialogue = await Dialogue.find_one(
             Dialogue.chat_bot_id == self.chat_bot.id,
             Dialogue.external_chat_id == self.message.chat_id,

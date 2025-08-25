@@ -1,5 +1,4 @@
 from enum import StrEnum, auto
-from typing import Set
 
 from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
@@ -20,7 +19,7 @@ class Dialogue(Document):
     chat_bot_id: PydanticObjectId
     external_chat_id: str
     message_list: list[DialogueMessage] = []
-    processed_message_ids: Set[str] = Field(default_factory=set)
+    processed_message_ids: set[str] = Field(default_factory=set)
 
     class Settings:
         name = "dialogues"

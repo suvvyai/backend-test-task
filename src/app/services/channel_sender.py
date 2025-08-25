@@ -1,7 +1,7 @@
 import httpx
 from loguru import logger
 
-from core.database.models import Channel
+from src.core.database.models import Channel
 
 
 class ChannelSenderService:
@@ -26,18 +26,21 @@ class ChannelSenderService:
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.post(
-                    url, json=payload, headers=headers, timeout=10.0
+                    url,
+                    json=payload,
+                    headers=headers,
+                    timeout=10.0,
                 )
                 response.raise_for_status()
                 logger.success(
-                    f"Successfully sent message to chat_id={chat_id} via channel {channel.id}"
+                    f"Successfully sent message to chat_id={chat_id} via channel {channel.id}",
                 )
             except httpx.HTTPStatusError as e:
                 logger.error(
                     f"HTTP error occurred when sending message to {url}: "
-                    f"status_code={e.response.status_code}, response={e.response.text}"
+                    f"status_code={e.response.status_code}, response={e.response.text}",
                 )
             except httpx.RequestError as e:
                 logger.error(
-                    f"Request error occurred when sending message to {url}: {e}"
+                    f"Request error occurred when sending message to {url}: {e}",
                 )
