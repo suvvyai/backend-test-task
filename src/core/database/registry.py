@@ -1,16 +1,18 @@
 from beanie import init_beanie
 from loguru import logger
-from motor.motor_asyncio import AsyncIOMotorClient
 
-from core import settings
-from core.database.models import ChatBot, Dialogue, Channel
+
+from src.core.database.client import get_database
+from src.core.database.models import Channel, ChatBot, Dialogue
 
 
 async def initialize_database() -> None:
     logger.info("Initialising DB...")
 
+    db = get_database()
+
     await init_beanie(
-        database=AsyncIOMotorClient(settings.mongo.url).get_database(settings.mongo.db_name),
+        database=db,
         document_models=[
             ChatBot,
             Dialogue,
