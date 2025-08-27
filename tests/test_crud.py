@@ -1,6 +1,7 @@
 import pytest
-from httpx import AsyncClient
 from beanie import PydanticObjectId
+from httpx import AsyncClient
+
 from core.database.models import Channel, ChatBot
 
 pytestmark = pytest.mark.asyncio
@@ -71,7 +72,8 @@ async def test_create_channel_invalid_bot_id(client: AsyncClient):
 
 
 async def test_create_channel_invalid_webhook_url(
-    client: AsyncClient, chat_bot: ChatBot
+    client: AsyncClient,
+    chat_bot: ChatBot,
 ):
     channel_data = {
         "webhook_url": "not-a-valid-url",
@@ -210,7 +212,8 @@ async def test_channel_chatbot_relationship(client: AsyncClient, chat_bot: ChatB
 
 
 async def test_create_multiple_channels_same_bot(
-    client: AsyncClient, chat_bot: ChatBot
+    client: AsyncClient,
+    chat_bot: ChatBot,
 ):
     channels_data = [
         {

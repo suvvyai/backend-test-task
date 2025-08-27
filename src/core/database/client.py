@@ -1,4 +1,5 @@
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+
 from core import settings
 
 _mongo_client: AsyncIOMotorClient | None = None

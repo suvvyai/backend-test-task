@@ -1,7 +1,8 @@
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from httpx import AsyncClient, Response
-from unittest.mock import MagicMock, AsyncMock
 from fastapi import status
+from httpx import AsyncClient
 
 from core.database.models import Channel, ChatBot, Dialogue
 
@@ -28,7 +29,8 @@ async def test_new_message_success(
 ) -> None:
     bot, _ = test_bot_and_channel
     mocker.patch(
-        "app.services.message_handler.mock_llm_call", return_value="Test Response"
+        "app.services.message_handler.mock_llm_call",
+        return_value="Test Response",
     )
     mock_send = mocker.patch(
         "app.services.channel_sender.ChannelSenderService.send_message",
@@ -44,7 +46,9 @@ async def test_new_message_success(
     }
 
     response = await client.post(
-        "/api/webhook/new_message", headers=headers, json=payload
+        "/api/webhook/new_message",
+        headers=headers,
+        json=payload,
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -64,7 +68,7 @@ async def test_ignore_employee_message(
     bot, _ = test_bot_and_channel
     mock_llm = mocker.patch("src.predict.mock_llm_call.mock_llm_call")
     mock_send = mocker.patch(
-        "src.app.services.channel_sender.ChannelSenderService.send_message"
+        "src.app.services.channel_sender.ChannelSenderService.send_message",
     )
 
     headers = {"Authorization": f"Bearer {bot.secret_token}"}
@@ -88,7 +92,8 @@ async def test_ignore_duplicate_message(
 ) -> None:
     bot, _ = test_bot_and_channel
     mock_llm = mocker.patch(
-        "app.services.message_handler.mock_llm_call", return_value="Response"
+        "app.services.message_handler.mock_llm_call",
+        return_value="Response",
     )
     mock_send = mocker.patch(
         "app.services.channel_sender.ChannelSenderService.send_message",

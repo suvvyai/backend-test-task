@@ -1,13 +1,15 @@
 import asyncio
 from asyncio import AbstractEventLoop
 from collections.abc import AsyncGenerator
+
 import pytest
 from httpx import ASGITransport, AsyncClient
+
 from app.app import app
 from core import settings
 from core.database.client import get_mongo_client
+from core.database.models import Channel, ChatBot
 from core.database.registry import initialize_database
-from core.database.models import Channel, ChatBot, Dialogue
 
 
 @pytest.fixture(scope="session")
@@ -22,7 +24,7 @@ async def setup_database() -> None:
     """
     if not settings.mongo.db_name.lower().endswith("test"):
         raise RuntimeError(
-            f"Aborting tests: DB name '{settings.mongo.db_name}' does not end with 'test'."
+            f"Aborting tests: DB name '{settings.mongo.db_name}' does not end with 'test'.",
         )
 
     client = get_mongo_client()
@@ -32,7 +34,7 @@ async def setup_database() -> None:
 
 
 @pytest.fixture(scope="function")
-async def client() -> AsyncGenerator[AsyncClient, None]:
+async def client() -> AsyncGenerator[AsyncClient]:
     """Получить тестовый клиент"""
     async with AsyncClient(
         transport=ASGITransport(app=app),

@@ -1,7 +1,8 @@
 from uuid import uuid4
+
 from beanie import PydanticObjectId
 from fastapi import APIRouter, status
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from core.database.models import ChatBot
 

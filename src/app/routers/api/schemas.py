@@ -1,7 +1,7 @@
 from typing import Literal
 
 from beanie import PydanticObjectId
-from pydantic import BaseModel, Field, HttpUrl, SecretStr, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, SecretStr
 
 
 class ChannelBase(BaseModel):

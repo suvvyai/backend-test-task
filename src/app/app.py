@@ -5,9 +5,9 @@ from fastapi import APIRouter, FastAPI
 from fastapi.responses import RedirectResponse
 
 from app.routers.api.channels import router as channels_router
+from app.routers.api.chat_bots import router as chat_bots_router
 from app.routers.api.hello_world import router as hello_world_router
 from app.routers.api.webhook import router as webhook_router
-from app.routers.api.chat_bots import router as chat_bots_router
 from core.database.registry import initialize_database
 
 

@@ -1,7 +1,6 @@
 from beanie import init_beanie
 from loguru import logger
 
-
 from core.database.client import get_database
 from core.database.models import Channel, ChatBot, Dialogue
 
