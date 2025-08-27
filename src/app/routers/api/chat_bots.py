@@ -1,7 +1,7 @@
 from uuid import uuid4
 from beanie import PydanticObjectId
 from fastapi import APIRouter, status
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from core.database.models import ChatBot
 
@@ -17,9 +17,10 @@ class ChatBotRead(BaseModel):
     name: str
     secret_token: str
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+    model_config = ConfigDict(
+        from_attributes=True,
+        populate_by_name=True,
+    )
 
 
 @router.post("/", response_model=ChatBotRead, status_code=status.HTTP_201_CREATED)

@@ -25,4 +25,4 @@ class Settings(BaseSettings):
     server: ServerSettings = ServerSettings()
 
 
-settings = Settings()  # type: ignore[call-arg]
+settings = Settings()

@@ -1,7 +1,7 @@
 from typing import Literal
 
 from beanie import PydanticObjectId
-from pydantic import BaseModel, Field, HttpUrl, SecretStr
+from pydantic import BaseModel, Field, HttpUrl, SecretStr, ConfigDict
 
 
 class ChannelBase(BaseModel):
@@ -30,9 +30,10 @@ class ChannelRead(ChannelBase):
     id: PydanticObjectId = Field(..., alias="_id")
     chat_bot_id: PydanticObjectId
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+    model_config = ConfigDict(
+        from_attributes=True,
+        populate_by_name=True,
+    )
 
 
 class IncomingMessage(BaseModel):
