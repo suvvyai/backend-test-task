@@ -1,15 +1,13 @@
 import asyncio
 from asyncio import AbstractEventLoop
 from collections.abc import AsyncGenerator
-
 import pytest
 from httpx import ASGITransport, AsyncClient
-
-
-from src.app.app import app
-from src.core import settings
-from src.core.database.client import get_mongo_client
-from src.core.database.registry import initialize_database
+from app.app import app
+from core import settings
+from core.database.client import get_mongo_client
+from core.database.registry import initialize_database
+from core.database.models import Channel, ChatBot, Dialogue
 
 
 @pytest.fixture(scope="session")
@@ -33,7 +31,7 @@ async def setup_database() -> None:
     await initialize_database()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 async def client() -> AsyncGenerator[AsyncClient, None]:
     """Получить тестовый клиент"""
     async with AsyncClient(
@@ -41,3 +39,23 @@ async def client() -> AsyncGenerator[AsyncClient, None]:
         base_url="http://testserver",
     ) as client:
         yield client
+
+
+@pytest.fixture(scope="function")
+async def chat_bot() -> ChatBot:
+    """Создание чат-бота после инициализации базы данных"""
+    bot = ChatBot(name="Test Bot", secret_token="test_bot_token_123")
+    await bot.insert()
+    return bot
+
+
+@pytest.fixture
+async def channel(chat_bot: ChatBot) -> Channel:
+    """Создание канала после инициализации базы данных"""
+    channel = Channel(
+        chat_bot_id=chat_bot.id,
+        webhook_url="https://example.com/webhook",
+        secret_token="channel_secret_123",
+    )
+    await channel.insert()
+    return channel

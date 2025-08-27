@@ -3,7 +3,7 @@ from httpx import AsyncClient, Response
 from unittest.mock import MagicMock, AsyncMock
 from fastapi import status
 
-from src.core.database.models import Channel, ChatBot, Dialogue
+from core.database.models import Channel, ChatBot, Dialogue
 
 pytestmark = pytest.mark.asyncio
 
@@ -28,10 +28,10 @@ async def test_new_message_success(
 ) -> None:
     bot, _ = test_bot_and_channel
     mocker.patch(
-        "src.app.services.message_handler.mock_llm_call", return_value="Test Response"
+        "app.services.message_handler.mock_llm_call", return_value="Test Response"
     )
     mock_send = mocker.patch(
-        "src.app.services.channel_sender.ChannelSenderService.send_message",
+        "app.services.channel_sender.ChannelSenderService.send_message",
         new_callable=AsyncMock,
     )
 
@@ -88,10 +88,10 @@ async def test_ignore_duplicate_message(
 ) -> None:
     bot, _ = test_bot_and_channel
     mock_llm = mocker.patch(
-        "src.app.services.message_handler.mock_llm_call", return_value="Response"
+        "app.services.message_handler.mock_llm_call", return_value="Response"
     )
     mock_send = mocker.patch(
-        "src.app.services.channel_sender.ChannelSenderService.send_message",
+        "app.services.channel_sender.ChannelSenderService.send_message",
         new_callable=AsyncMock,
     )
 
