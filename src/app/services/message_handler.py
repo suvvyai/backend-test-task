@@ -1,8 +1,8 @@
 from loguru import logger
 
-from src.app.routers.api.schemas import IncomingMessage
-from src.app.services.channel_sender import ChannelSenderService
-from src.core.database.models import (
+from app.routers.api.schemas import IncomingMessage
+from app.services.channel_sender import ChannelSenderService
+from core.database.models import (
     Channel,
     ChatBot,
     Dialogue,
@@ -17,7 +17,7 @@ class MessageHandlerService:
         self.chat_bot = chat_bot
         self.message = message
 
-    async def process_message(self) -> None:  # <--- Теперь возвращает None
+    async def process_message(self) -> None:
         """
         Основной метод для обработки входящего сообщения.
         Теперь не возвращает текст, а сам вызывает отправку.

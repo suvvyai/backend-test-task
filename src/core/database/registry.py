@@ -2,8 +2,8 @@ from beanie import init_beanie
 from loguru import logger
 
 
-from src.core.database.client import get_database
-from src.core.database.models import Channel, ChatBot, Dialogue
+from core.database.client import get_database
+from core.database.models import Channel, ChatBot, Dialogue
 
 
 async def initialize_database() -> None:

@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, Header, HTTPException, status
-
-from src.app.routers.api.schemas import IncomingMessage
-from src.app.services.message_handler import MessageHandlerService
-from src.core.database.models import ChatBot
+from app.routers.api.schemas import IncomingMessage
+from app.services.message_handler import MessageHandlerService
+from core.database.models import ChatBot
 
 router = APIRouter(prefix="/webhook", tags=["Webhook"])
 
@@ -17,7 +16,7 @@ async def get_chat_bot_from_token(
             detail="Invalid authorization scheme",
         )
     token = authorization.split(" ")[1]
-    chat_bot = await ChatBot.find_one(ChatBot.secret_token == token)
+    chat_bot = await ChatBot.find_one({"secret_token": token})
     if not chat_bot:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

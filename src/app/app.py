@@ -4,10 +4,11 @@ from contextlib import asynccontextmanager
 from fastapi import APIRouter, FastAPI
 from fastapi.responses import RedirectResponse
 
-from src.app.routers.api.channels import router as channels_router
-from src.app.routers.api.hello_world import router as hello_world_router
-from src.app.routers.api.webhook import router as webhook_router
-from src.core.database.registry import initialize_database
+from app.routers.api.channels import router as channels_router
+from app.routers.api.hello_world import router as hello_world_router
+from app.routers.api.webhook import router as webhook_router
+from app.routers.api.chat_bots import router as chat_bots_router
+from core.database.registry import initialize_database
 
 
 @asynccontextmanager
@@ -30,5 +31,6 @@ main_router = APIRouter(prefix="/api")
 main_router.include_router(hello_world_router)
 main_router.include_router(channels_router)
 main_router.include_router(webhook_router)
+main_router.include_router(chat_bots_router)
 
 app.include_router(main_router)

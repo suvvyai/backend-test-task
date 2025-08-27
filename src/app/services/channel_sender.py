@@ -1,7 +1,7 @@
 import httpx
 from loguru import logger
 
-from src.core.database.models import Channel
+from core.database.models import Channel
 
 
 class ChannelSenderService:
