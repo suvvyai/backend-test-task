@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 
 from app.routers.api.schemas import IncomingMessage
-from app.services.message_handler import MessageHandlerService
+from app.services.message_handler import process_message
 from core.database.models import ChatBot
 
 router = APIRouter(prefix="/webhook", tags=["Webhook"])
@@ -34,10 +34,6 @@ async def new_message(
     """
     Эндпоинт для получения новых сообщений из канала.
     """
-    service = MessageHandlerService(chat_bot, message)
-    response_text = await service.process_message()
-
-    if response_text:
-        print(f"Нужно отправить ответ: '{response_text}' в чат {message.chat_id}")
+    await process_message(chat_bot, message)
 
     return {"status": "ok"}
