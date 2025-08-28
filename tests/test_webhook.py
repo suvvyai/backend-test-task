@@ -9,25 +9,13 @@ from core.database.models import Channel, ChatBot, Dialogue
 pytestmark = pytest.mark.asyncio
 
 
-@pytest.fixture
-async def test_bot_and_channel() -> tuple[ChatBot, Channel]:
-    bot = ChatBot(name="Webhook Bot", secret_token="webhook_secret")
-    await bot.insert()
-    channel = Channel(
-        chat_bot_id=bot.id,
-        webhook_url="https://fake-channel.com/message",
-        secret_token="fake_channel_token",
-    )
-    await channel.insert()
-    return bot, channel
-
-
 async def test_new_message_success(
     client: AsyncClient,
-    test_bot_and_channel: tuple[ChatBot, Channel],
+    chat_bot: ChatBot,
+    channel: Channel,
     mocker: MagicMock,
 ) -> None:
-    bot, _ = test_bot_and_channel
+
     mocker.patch(
         "app.services.message_handler.mock_llm_call",
         return_value="Test Response",
@@ -37,7 +25,7 @@ async def test_new_message_success(
         new_callable=AsyncMock,
     )
 
-    headers = {"Authorization": f"Bearer {bot.secret_token}"}
+    headers = {"Authorization": f"Bearer {chat_bot.secret_token}"}
     payload = {
         "message_id": "msg-webhook-1",
         "chat_id": "chat-webhook-1",
@@ -62,16 +50,16 @@ async def test_new_message_success(
 
 async def test_ignore_employee_message(
     client: AsyncClient,
-    test_bot_and_channel: tuple[ChatBot, Channel],
+    chat_bot: ChatBot,
+    channel: Channel,
     mocker: MagicMock,
 ) -> None:
-    bot, _ = test_bot_and_channel
-    mock_llm = mocker.patch("src.predict.mock_llm_call.mock_llm_call")
+    mock_llm = mocker.patch("app.services.message_handler.mock_llm_call")
     mock_send = mocker.patch(
-        "src.app.services.channel_sender.ChannelSenderService.send_message",
+        "app.services.channel_sender.ChannelSenderService.send_message",
     )
 
-    headers = {"Authorization": f"Bearer {bot.secret_token}"}
+    headers = {"Authorization": f"Bearer {chat_bot.secret_token}"}
     payload = {
         "message_id": "msg-webhook-2",
         "chat_id": "chat-webhook-2",
@@ -87,10 +75,10 @@ async def test_ignore_employee_message(
 
 async def test_ignore_duplicate_message(
     client: AsyncClient,
-    test_bot_and_channel: tuple[ChatBot, Channel],
+    chat_bot: ChatBot,
+    channel: Channel,
     mocker: MagicMock,
 ) -> None:
-    bot, _ = test_bot_and_channel
     mock_llm = mocker.patch(
         "app.services.message_handler.mock_llm_call",
         return_value="Response",
@@ -100,7 +88,7 @@ async def test_ignore_duplicate_message(
         new_callable=AsyncMock,
     )
 
-    headers = {"Authorization": f"Bearer {bot.secret_token}"}
+    headers = {"Authorization": f"Bearer {chat_bot.secret_token}"}  # <--- ИЗМЕНЕНИЕ 2
     payload = {
         "message_id": "msg-duplicate-webhook",
         "chat_id": "chat-duplicate-webhook",
